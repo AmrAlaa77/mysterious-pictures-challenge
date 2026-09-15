@@ -11,8 +11,8 @@ Static, single-page facilitator + participant app. No backend, no database.
 - `build_index.js` — regenerates `index.html` from `tokens.json`. Re-run with `node build_index.js` if you ever need to change the base URL or rebuild.
 
 ## How it works
-- Facilitator opens the root URL with no query string: `https://amralaasaleh.github.io/mysterious-pictures-challenge/`
-- Participant scans a QR code that opens `https://amralaasaleh.github.io/mysterious-pictures-challenge/?v=<token>` — the token is a permanent, opaque, random 8-character id that reveals nothing about picture order. The page detects `?v=` and renders **only** that one image full-screen on black, nothing else.
+- Facilitator opens the root URL with no query string: `https://AmrAlaa77.github.io/mysterious-pictures-challenge/`
+- Participant scans a QR code that opens `https://AmrAlaa77.github.io/mysterious-pictures-challenge/?v=<token>` — the token is a permanent, opaque, random 8-character id that reveals nothing about picture order. The page detects `?v=` and renders **only** that one image full-screen on black, nothing else.
 - The token → picture mapping is fixed forever in `index.html` (baked in at build time). Shuffling on the facilitator screen only changes which QR *card* appears in which visual slot (and its A/B/C/D label) — it never changes which token points to which picture.
 - Selecting "N pictures" always uses positions 1..N (the most-zoomed-in picture through the Nth), never a random subset.
 

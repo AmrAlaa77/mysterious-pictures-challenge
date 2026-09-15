@@ -1,6 +1,6 @@
 const fs = require('fs');
 const tokens = JSON.parse(fs.readFileSync('tokens.json','utf8'));
-const BASE_URL = 'https://amralaasaleh.github.io/mysterious-pictures-challenge/';
+const BASE_URL = 'https://AmrAlaa77.github.io/mysterious-pictures-challenge/';
 
 // TOKEN_MAP: token -> position (1..30). Position order preserved from PDF (1=most zoomed in .. 30=most zoomed out)
 const TOKEN_MAP = {};
