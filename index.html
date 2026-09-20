@@ -66,11 +66,10 @@ app.innerHTML=`<header><h1>Mysterious Pictures Challenge</h1><button onclick="to
     <div class="music-row"><button id="musicBtn" class="music-btn" onclick="toggleMusic()">▶ Play Music</button></div>
   </div>
   <div class="toolbox timer-box">
-    <div id="timerDisplay" class="timer-display">05:00</div>
+    <div id="timerDisplay" class="timer-display">00:00</div>
     <div class="timer-controls">
-      <label><b>Minutes:</b> <input id="timerMinutes" type="number" min="1" max="180" value="5"></label>
-      <button class="primary" id="timerStartBtn" onclick="toggleTimer()">Start Timer</button>
-      <button onclick="resetTimer()">Reset Timer</button>
+      <button class="primary" id="timerStartBtn" onclick="toggleTimer()">Start Stopwatch</button>
+      <button onclick="resetTimer()">Reset Stopwatch</button>
     </div>
   </div>
 </div>
@@ -89,31 +88,30 @@ window.toggleReveal=function(){document.getElementById('reveal').classList.toggl
 window.resetAll=function(){document.getElementById('count').value=10;document.getElementById('reveal').classList.remove('show');start()}
 window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}
 
-let timerRemaining=300,timerRunning=false,timerInterval=null;
-function formatTime(sec){sec=Math.max(0,Math.floor(sec));const m=Math.floor(sec/60),ss=sec%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0')}
-function paintTimer(){const el=document.getElementById('timerDisplay');if(!el)return;el.textContent=formatTime(timerRemaining);el.classList.toggle('done',timerRemaining===0)}
+let timerElapsed=0,timerRunning=false,timerInterval=null,timerStartedAt=0;
+function formatTime(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),ss=sec%60;return h>0?String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'):String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0')}
+function paintTimer(){const el=document.getElementById('timerDisplay');if(!el)return;el.textContent=formatTime(timerElapsed);el.classList.remove('done')}
 window.toggleTimer=function(){
   const btn=document.getElementById('timerStartBtn');
-  if(timerRunning){timerRunning=false;clearInterval(timerInterval);timerInterval=null;btn.textContent='Resume Timer';return}
-  if(timerRemaining<=0){window.resetTimer()}
-  timerRunning=true;btn.textContent='Pause Timer';
-  timerInterval=setInterval(()=>{timerRemaining--;paintTimer();if(timerRemaining<=0){timerRemaining=0;paintTimer();timerRunning=false;clearInterval(timerInterval);timerInterval=null;btn.textContent='Start Timer'}},1000)
+  if(timerRunning){
+    timerElapsed=Math.floor((Date.now()-timerStartedAt)/1000);
+    timerRunning=false;clearInterval(timerInterval);timerInterval=null;
+    btn.textContent='Resume Stopwatch';paintTimer();return;
+  }
+  timerStartedAt=Date.now()-(timerElapsed*1000);
+  timerRunning=true;btn.textContent='Pause Stopwatch';
+  timerInterval=setInterval(()=>{timerElapsed=Math.floor((Date.now()-timerStartedAt)/1000);paintTimer()},250);
 }
 window.resetTimer=function(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null}
-  timerRunning=false;
-  const input=document.getElementById('timerMinutes');
-  const mins=Math.min(180,Math.max(1,parseInt(input?.value,10)||5));
-  if(input)input.value=mins;
-  timerRemaining=mins*60;paintTimer();
-  const btn=document.getElementById('timerStartBtn');if(btn)btn.textContent='Start Timer';
+  timerRunning=false;timerElapsed=0;paintTimer();
+  const btn=document.getElementById('timerStartBtn');if(btn)btn.textContent='Start Stopwatch';
 }
-document.getElementById('timerMinutes')?.addEventListener('change',()=>{if(!timerRunning)window.resetTimer()});
 
 window.toggleMusic=function(){
   const audio=document.getElementById('challengeMusic'),btn=document.getElementById('musicBtn');
   if(!audio||!btn)return;
-  if(audio.paused){audio.currentTime=0;audio.play().then(()=>{btn.textContent='■ Stop Music';btn.classList.add('playing')}).catch(()=>{})}
+  if(audio.paused){audio.currentTime=0;audio.play().then(()=>{btn.textContent='■ Stop Music';btn.classList.add('playing')}).catch(()=>{btn.textContent='Music File Missing';btn.classList.remove('playing');btn.disabled=true})}
   else{audio.pause();audio.currentTime=0;btn.textContent='▶ Play Music';btn.classList.remove('playing')}
 }
 document.getElementById('challengeMusic')?.addEventListener('ended',()=>{const btn=document.getElementById('musicBtn');if(btn){btn.textContent='▶ Play Music';btn.classList.remove('playing')}})
