@@ -55,7 +55,7 @@ if(vtoken && TOKEN_MAP[vtoken]){
 } else {
 let count=10, order=[], page=0;
 app.innerHTML=`<header><h1>Mysterious Pictures Challenge</h1><button onclick="toggleFS()">Full Screen</button></header>
-<audio id="challengeMusic" src="challenge-music.mp3" preload="auto"></audio>
+<audio id="challengeMusic" src="challenge-music.mp3" preload="auto" loop></audio>
 <div class="wrap"><div class="panel"><div class="controls">
 <label><b>Pictures:</b> <select id="count">${Array.from({length:29},(_,k)=>`<option value="${k+2}" ${k+2===10?'selected':''}>${k+2}</option>`).join('')}</select></label>
 <button class="primary" onclick="start()">Start / Apply</button><button onclick="shuffle()">Shuffle</button>
@@ -114,7 +114,6 @@ window.toggleMusic=function(){
   if(audio.paused){audio.currentTime=0;audio.play().then(()=>{btn.textContent='■ Stop Music';btn.classList.add('playing')}).catch(()=>{btn.textContent='Music File Missing';btn.classList.remove('playing');btn.disabled=true})}
   else{audio.pause();audio.currentTime=0;btn.textContent='▶ Play Music';btn.classList.remove('playing')}
 }
-document.getElementById('challengeMusic')?.addEventListener('ended',()=>{const btn=document.getElementById('musicBtn');if(btn){btn.textContent='▶ Play Music';btn.classList.remove('playing')}})
 paintTimer();
 }
 </script></body></html>
